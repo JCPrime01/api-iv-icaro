@@ -22,8 +22,28 @@
       res.writeHead(302, { Location: 'https://grupojogadorcaro.com.br/quem-e-jota' });
       res.end();
       return;
-    }
+     }
+    
+    const url = 'https://go.aff.esportiva.bet/6j30imbu?campaign_id=24609'
 
-    res.writeHead(302, { Location: 'https://go.aff.esportiva.bet/zy1z1vkz?shareCode=QC7T89KMRI8&afp_campaign=ti' });
+    const shareCode = '&shareCode=QC7T89KMRI8'
+    
+    const afp = '&afp2=ti'
+    
+    const source = '&utm_medium=ti'
+
+    const destino = url+shareCode+afp+source
+
+    // pega os params da URL de entrada (req.url é o path + query, ex: "/?utm_source=fb&...")
+    const entrada = new URL(req.url, `https://${req.headers.host}`).searchParams;
+  
+    // repassa todas as utm_* (e também fbclid/gclid, se vierem)
+    for (const [chave, valor] of entrada) {
+      if (chave.startsWith('utm_') || chave === 'fbclid' || chave === 'gclid') {
+        destino.searchParams.set(chave, valor);
+      }
+    }
+    
+    res.writeHead(302, { Location: destino });
     res.end();
   }
